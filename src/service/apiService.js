@@ -26,17 +26,18 @@ export default {
   getLote(id) {
     return apiClient.get("/lotes/" + id);
   },
-  createLote(loteData) {
-    return apiClient.post("/lotes", loteData);
+  createLote(item) {
+    console.log('createLote loteData ' + JSON.stringify(item));
+    return apiClient.post("/lotes", item);
   },
   deleteLote(id) {
     return apiClient.delete("/lotes/" + id);
   },
-  updateLote(data) {
-    return apiClient.put("/lotes", data);
+  updateLote(item) {
+    return apiClient.put("/lotes", item);
   },
-  createLote(data) {
-    return apiClient.post("/lotes", data);
+  createLote(item) {
+    return apiClient.post("/lotes", item);
   },
 
 
@@ -46,7 +47,7 @@ export default {
   getTiposLote() {
     return apiClient.get("/lotetypes");
   },
- getTipoLote(id) {
+  getTipoLote(id) {
     return apiClient.get("/lotetypes/" + id);
   },
   createTipoLote(data) {
@@ -63,11 +64,11 @@ export default {
   },
 
 
-//----------- Cuota Types
+  //----------- Cuota Types
   getTiposCuota() {
     return apiClient.get("/cuotatypes");
   },
- getTipoCuota(id) {
+  getTipoCuota(id) {
     return apiClient.get("/cuotatypes/" + id);
   },
   createTipoCuota(data) {
@@ -82,4 +83,29 @@ export default {
   createTipoCuota(data) {
     return apiClient.post("/cuotatypes", data);
   },
+
+
+  //----------- Contactos
+  getContactos() {
+    return apiClient.get("/contactos");
+  },
+  getContacto(id) {
+    return apiClient.get("/contactos/" + id);
+  },
+  createContacto(data) {
+    return apiClient.post("/contactos", data);
+  },
+  deleteContacto(id) {
+    return apiClient.delete("/contactos/" + id);
+  },
+  updateContacto(data) {
+    return apiClient.put("/contactos", data);
+  },
+  createContacto(data) {
+    return apiClient.post("/contactos", data);
+  },
+  getContactosShort() {
+    return apiClient.get("/contactosshort");
+  },
+
 };

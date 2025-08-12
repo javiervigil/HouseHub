@@ -30,7 +30,7 @@
                 </TabPanel>
                 <TabPanel value="3">
                     <p class="m-0">
-                        <ConfiguracionView4 /> ConfiguracionView4
+                        <Contactos />
                     </p>
                 </TabPanel>
             </TabPanels>
@@ -43,11 +43,12 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primevue';
 import Lotes from './Lotes.vue';
 import TipoLotes from './TipoLotes.vue';
 import TipoCuotas from './TipoCuotas.vue';
+import Contactos from './Contactos.vue';
 
 
 export default {
     components: {
-        Tabs, TabList, Tab, TabPanels, TabPanel, Lotes, TipoLotes, TipoCuotas
+        Tabs, TabList, Tab, TabPanels, TabPanel, Lotes, TipoLotes, TipoCuotas, Contactos
     },
     data() {
         return {
@@ -55,7 +56,7 @@ export default {
                 { id: '0', label: 'Lotes', icon: 'pi pi-home' },
                 { id: '1', label: 'Tipo de Lotes', icon: 'pi pi-tags' },
                 { id: '2', label: 'Cuotas', icon: 'pi pi-dollar' },
-                { id: '3', label: 'Messages', icon: 'pi pi-inbox' }
+                { id: '3', label: 'Contactos', icon: 'pi pi-address-book' }
             ]
         }
     },
