@@ -1,5 +1,5 @@
 <template>
-home user
+    home user
 </template>
 
 <style scoped></style>

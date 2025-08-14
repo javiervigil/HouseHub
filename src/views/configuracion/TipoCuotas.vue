@@ -220,7 +220,7 @@ export default {
 
 <style scope>
 .leftcontent {
-    width: 50%;
+    width: 70%;
 }
 
 input,

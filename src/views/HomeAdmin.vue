@@ -1,5 +1,5 @@
 <template>
-home admin
+    home admin
 </template>
 
 <style scoped></style>

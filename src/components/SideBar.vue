@@ -38,6 +38,16 @@
           <Button icon="pi pi-sign-out" v-tooltip="'Cerrar Sesion'" @click="handleLogout"/>
         </li>
       </ul>
+      <hr/>
+      <!-- Menu Super Usuario -->
+      <ul>
+        <li>
+          <router-link :to="{ name: 'homesuperuser' }"><Button icon="pi pi-home" v-tooltip="'Home'" /></router-link>
+        </li>
+        <li>
+          <Button icon="pi pi-sign-out" v-tooltip="'Cerrar Sesion'" @click="handleLogout"/>
+        </li>
+      </ul>
     </nav>
   </aside>
 </template>

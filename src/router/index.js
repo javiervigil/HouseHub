@@ -22,6 +22,11 @@ const routes = [
         component: () => import('@/views/HomeUser.vue')
       },
       {
+        path: '/',
+        name: 'homesuperuser',
+        component: () => import('@/views/HomeSuperUser.vue')
+      },
+      {
         path: '/finanzasa',
         name: 'finanzasa',
         component: () => import('@/views/finanzasa/Finanzas.vue')
@@ -29,7 +34,7 @@ const routes = [
       {
         path: '/finanzasu',
         name: 'finanzasu',
-        component: () => import('@/views/finanzasu/Finanzas.vue')
+        component: () => import('@/views/finanzasuser/Finanzas.vue')
       },
       {
         path: '/administracion',

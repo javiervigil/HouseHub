@@ -93,6 +93,7 @@ export default {
         },
         async createLoteType() {
             try {
+                console.log('initvalues antes.. ' + JSON.stringify(this.initialValues));
                 return (await apiService.createTipoLote(this.initialValues)).data;
             } catch (error) {
                 console.error("Failed to create LoteType:", error);
@@ -203,7 +204,7 @@ export default {
 
 <style scope>
 .leftcontent {
-    width: 50%;
+    width: 70%;
 }
 
 input,

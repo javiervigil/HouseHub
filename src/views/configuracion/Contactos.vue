@@ -7,11 +7,10 @@
             :rows="10" selectionMode="multiple" :metaKeySelection="metaKey" dataKey="id">
             <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
             <Column field="id" header="Id" hidden></Column>
-            <Column field="loteIdName" header="Lote" sortable></Column>
+            <Column field="loteName" header="Lote" sortable></Column>
             <Column field="name" header="Nombre" sortable></Column>
             <Column field="email" header="Correo" sortable></Column>
             <Column field="phone" header="Telefono" sortable></Column>
-
         </DataTable>
     </div>
 
@@ -37,14 +36,12 @@
                     <Message v-if="$form.phone?.invalid" severity="error" size="small" variant="simple">{{
                         $form.phone.error.message }}</Message>
                 </div>
-                <Select name="loteId" :options="itemsLote" optionLabel="name" placeholder="Lote" fluid
+                <Select name="lote" :options="itemsLote" optionLabel="name" placeholder="Lote" fluid
                     style=" margin-bottom: 10px;    margin-top: 10px;">
-
-
-
                 </Select>
                 <Message v-if="$form.lote?.invalid" severity="error" size="small" variant="simple">{{
                     $form.lote.error.message }}</Message>
+
 
                 <div class="formButtons">
                     <Button type="button" label="Cancelar" severity="secondary" @click="showAdd = false"
@@ -87,7 +84,7 @@ export default {
                 name: '',
                 email: '',
                 phone: '',
-                loteId: 0
+                lote: 0
             }
         }
     },
@@ -117,7 +114,7 @@ export default {
             }
         },
         async createContacto() {
-            try {
+            try {               
                 return (await apiService.createContacto(this.initialValues)).data;
             } catch (error) {
                 console.error("Failed to create Contacto:", error);
@@ -140,7 +137,7 @@ export default {
             this.initialValues.name = '';
             this.initialValues.email = '';
             this.initialValues.phone = '';
-            this.initialValues.loteId = null;
+            this.initialValues.lote = null;
             this.showAdd = true;
             this.newItem = true;
         },
@@ -197,16 +194,13 @@ export default {
             if (!values.phone) {
                 errors.phone = [{ message: 'Phone is required.' }];
             }
-            if (!values.loteId) {
-                errors.loteId = [{ message: 'Lote is required.' }];
+            if (!values.lote) {
+                errors.lote = [{ message: 'Lote is required.' }];
             }
-
-
             this.initialValues.name = values.name;
             this.initialValues.email = values.email;
             this.initialValues.phone = values.phone;
-            this.initialValues.loteId = values.loteId;
-
+            this.initialValues.lote = values.lote;
             return {
                 errors
             };
@@ -229,7 +223,7 @@ export default {
                             name: this.initialValues.name,
                             email: this.initialValues.email,
                             phone: this.initialValues.phone,
-                            loteId: this.initialValues.loteId
+                            lote: this.initialValues.lote
                         } : item
                     );
                 }
@@ -245,7 +239,7 @@ export default {
 
 <style scope>
 .leftcontent {
-    width: 50%;
+    width: 70%;
 }
 
 input,

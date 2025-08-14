@@ -4,17 +4,33 @@
     <div class="leftcontent">
         <TableBar @addItem="addItem" @editItem="editItem" @deleteItem="deleteItem" @refreshTable="refreshTable" />
         <DataTable v-model:selection="selectedItems" :value="items" sortField="id" stripedRows size="small" paginator
-            :rows="10" selectionMode="multiple" :metaKeySelection="metaKey" dataKey="id">
+            :rows="10" selectionMode="multiple" :metaKeySelection="metaKey" dataKey="id"
+            v-model:expandedRows="expandedRows" @rowExpand="onRowExpand" @rowCollapse="onRowCollapse">
             <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
+            <Column expander style="width: 5rem" />
             <Column field="id" header="Id" hidden></Column>
             <Column field="name" header="Nombre" sortable></Column>
             <Column field="description" header="Descripcion" sortable></Column>
-            <Column field="lotetypeId.name" header="Tipo de Lote" sortable></Column>
-            <Column field="cuotatypeId" header="Cuota asignada" sortable>
+            <Column field="image" header="Imagen" sortable>
                 <template #body="slotProps">
-                    {{ slotProps.data.cuotatypeId.name }} - $ {{ slotProps.data.cuotatypeId.amount }}
+                    <img :src="`data:image/jpeg;base64,${slotProps.data.image}`" :alt="slotProps.data.image"
+                        class="w-24 rounded" style="width: 70px;" />
                 </template>
             </Column>
+
+
+            <template #expansion="slotProps">
+                <div class="p-4">
+                    <h5>Usuarios</h5>
+                    <DataTable :value="slotProps.data.users">
+                        <Column field="id" header="Id" hidden></Column>
+                        <Column field="name" header="Customer" sortable></Column>
+                        <Column field="email" header="Date" sortable></Column>                        
+                    </DataTable>
+                </div>
+            </template>
+
+
         </DataTable>
     </div>
 
@@ -36,30 +52,13 @@
                         $form.description.error.message }}</Message>
                 </div>
 
-                <Select name="lotetypeId" :options="itemsLoteTypes" optionLabel="name" placeholder="Tipo de lote" fluid
-                    style=" margin-bottom: 10px;    margin-top: 10px;" />
-                <Message v-if="$form.lotetypeId?.invalid" severity="error" size="small" variant="simple">{{
-                    $form.lotetypeId.error.message }}</Message>
 
-                <Select name="cuotatypeId" :options="itemsCuotaTypes" optionLabel="name" placeholder="Cuota asignada" fluid
-                    style=" margin-bottom: 10px;  margin-top: 20px;" v-model="selectedCuotaType">
-
-                    <template #value="item">
-                        <div class="flex-row gap-3">
-                            <div v-if="item.value">{{ item.value.name }} - $ {{ item.value.amount }}</div>
-                            <div v-else>Cuota</div>
-                        </div>
-                    </template>
-                    <template #option="item">
-                        <div class="flex-row gap-3">
-                            <div>{{ item.option.name }}</div>
-                            <div>$ {{ item.option.amount }}</div>
-                        </div>
-                    </template>
-                </Select>
-
-                <Message v-if="$form.cuotatypeId?.invalid" severity="error" size="small" variant="simple">{{
-                    $form.cuotatypeId.error.message }}</Message>
+                <div class="flex flex-col gap-1">
+                    <FileUpload mode="basic" @select="onFileSelect" customUpload auto severity="secondary"
+                        class="p-button-outlined" style="margin-bottom: 20px;" />
+                    <img v-if="src" :src="src" alt="Imagen" class="shadow-md rounded-xl w-full sm:w-64"
+                        style="width: 200px;" />
+                </div>
 
                 <div class="formButtons">
                     <Button type="button" label="Cancelar" severity="secondary" @click="showAdd = false"
@@ -69,8 +68,6 @@
             </Form>
         </div>
     </Dialog>
-
-
 </template>
 
 <script>
@@ -78,14 +75,15 @@
 import apiService from '@/service/apiService';
 import { ref } from 'vue';
 import TableBar from '@/components/TableBar.vue';
-import { Button, Column, ConfirmPopup, DataTable, Dialog, InputText, Message, Select, Toast } from 'primevue';
+import { Button, Column, ConfirmPopup, DataTable, Dialog, FileUpload, InputText, Message, Select, Toast } from 'primevue';
 import { Form } from '@primevue/forms';
 import { useToast } from 'primevue/usetoast';
 import { useConfirm } from "primevue/useconfirm";
 
+
 export default {
     components: {
-        DataTable, Column, TableBar, Dialog, InputText, Button, Form, Select, Message, ConfirmPopup, Toast
+        DataTable, Column, TableBar, Dialog, InputText, Button, Form, Select, Message, ConfirmPopup, Toast, FileUpload
     },
     data() {
         return {
@@ -93,85 +91,66 @@ export default {
             confirm: useConfirm(),
             toast: useToast(),
             selectedItems: ref([]),
-            selectedCuotaType: ref(),
             metaKey: ref(true),
             items: ref([]),
-            itemsLoteTypes: ref([]),
-            itemsCuotaTypes: ref([]),
             showAdd: ref(false),
             newItem: ref(false),
             initialValues: {
-                id: null,
+                id: 0,
                 name: '',
                 description: '',
-                lotetypeId: null,
-                cuotatypeId: null
-            }
+                image: null
+            },
+            //para la imagen
+            file: ref(null),
+            reader: ref(null),
+            src: ref(null),
+            //para la tabla anidada
+            expandedRows: {}
         }
     },
     methods: {
         // llamadas al api
-        async getTiposLote() {
-            try {
-                const response = await apiService.getTiposLote();
-                this.itemsLoteTypes = response.data;
-            } catch (error) {
-                console.error("Failed to fetch Tipos de Lotes:", error);
-            }
-        },
-        async getTiposCuota() {
-            try {
-                const response = await apiService.getTiposCuota();
-                this.itemsCuotaTypes = response.data;
-            } catch (error) {
-                console.error("Failed to fetch Tipos de Lotes:", error);
-            }
-        },
         async refreshTable() {
             try {
-                const response = await apiService.getLotes();
+                const response = await apiService.getCondominios();
                 this.items = response.data;
             } catch (error) {
-                console.error("Failed to fetch Lotes:", error);
+                console.error("Failed to fetch Condominios:", error);
             }
         },
-        async updateLote() {
-            try { 
-                this.initialValues.cuotatypeId = this.selectedCuotaType;
-                return (await apiService.updateLote(this.initialValues)).data;
-            } catch (error) {
-                console.error("Failed to update Lote:", error);
-            }
-        },
-        async createLote() {
+        async updateCondominio() {
             try {
-                
-                console.log('######################################2');
-               
-                return (await apiService.createLote(this.initialValues)).data;
+                return (await apiService.updateCondominio(this.initialValues)).data;
             } catch (error) {
-                console.error("Failed to create Lote:", error);
+                console.error("Failed to update Condominios:", error);
             }
         },
-        async deleteLote(id) {
+        async createCondominio() {
             try {
-                await apiService.deleteLote(id);
+
+                return (await apiService.createCondominio(this.initialValues)).data;
             } catch (error) {
-                console.error("Failed to delete Lote:", error);
+                console.error("Failed to create Condominio:", error);
+            }
+        },
+        async deleteCondominio(id) {
+            try {
+                await apiService.deleteCondominio(id);
+            } catch (error) {
+                console.error("Failed to delete Condominio:", error);
             }
         },
 
+
         // listeners de eventos de la barra de acciones
         addItem() {
-            this.titulo = 'Agregar nuevo lote';
-            this.getTiposLote();
-            this.getTiposCuota();
+            this.titulo = 'Agregar nuevo condominio';
             this.initialValues.id = null;
             this.initialValues.name = '';
             this.initialValues.description = '';
-            this.initialValues.lotetypeId = null
-            this.initialValues.cuotatypeId = null;
-            this.selectedCuotaType = null;
+            this.initialValues.image = null;
+            this.src = null;
             this.showAdd = true;
             this.newItem = true;
         },
@@ -179,10 +158,9 @@ export default {
             if (this.selectedItems.length != 1) {
                 this.toast.add({ severity: 'error', summary: 'Select only one item to edit.', life: 3000 });
             } else {
-                this.titulo = 'Actualizar lote';
-                this.getTiposLote();
-                this.getTiposCuota();
+                this.titulo = 'Actualizar condominio';
                 this.initialValues = this.selectedItems[0];
+                this.src = "data:image/jpeg;base64," + this.initialValues.image;
                 this.showAdd = true;
                 this.newItem = false;
             }
@@ -191,7 +169,6 @@ export default {
             if (this.selectedItems.length === 0) {
                 this.toast.add({ severity: 'error', summary: 'Select at least one item to delete.', life: 3000 });
             } else {
-
                 this.confirm.require({
                     target: event.currentTarget,
                     message: 'Desea borrar el/los registros?',
@@ -208,7 +185,7 @@ export default {
                     accept: () => {
                         this.toast.add({ severity: 'info', summary: 'Registros borrados', life: 3000 });
                         for (const item of this.selectedItems) {
-                            this.deleteLote(item.id);
+                            this.deleteCondominio(item.id);
                             this.items = this.items.filter(itemx => itemx.id !== item.id);
                         }
                     },
@@ -227,47 +204,49 @@ export default {
             if (!values.description) {
                 errors.description = [{ message: 'Description is required.' }];
             }
-            if (!values.lotetypeId) {
-                errors.lotetypeId = [{ message: 'Lote Type is required.' }];
-            }
-            if (!values.cuotatypeId) {
-                errors.cuotatypeId = [{ message: 'Cuota is required.' }];
-            }
             this.initialValues.name = values.name;
-            this.initialValues.description = values.description;
-            this.initialValues.lotetypeId = values.lotetypeId;
-            this.initialValues.cuotatypeId = values.cuotatypeId;
+            this.initialValues.description = values.description
+            this.initialValues.image = values.image
             return {
                 errors
             };
         },
         async onFormSubmit({ valid }) {
             if (valid) {
-                this.toast.add({ severity: 'success', summary: 'Lote actualizado correctamente.', life: 3000 });
+                this.toast.add({ severity: 'success', summary: 'Condominio actualizado correctamente.', life: 3000 });
                 this.showAdd = false;
                 this.selectedItems = [];
                 if (this.newItem) {
-                    console.log('initialValues ' + JSON.stringify(this.initialValues));
-                    console.log('######################################1');
-                    this.initialValues = await this.createLote();
+                    this.initialValues.image = this.src.split(',')[1];
+                    this.initialValues.src = this.image;
+                    this.initialValues = await this.createCondominio();
                     this.items = [...this.items, this.initialValues];
                     this.refreshTable();
                 } else {
-                    this.updateLote();
+                    this.initialValues.image = this.src.split(',')[1];
+                    this.initialValues.src = this.image;
+                    this.updateCondominio();
                     this.items = this.items.map(item =>
                         item.id === this.initialValues.id ? {
                             ...item,
                             id: this.initialValues.id,
                             name: this.initialValues.name,
                             description: this.initialValues.description,
-                            lotetypeId: this.initialValues.lotetypeId,
-                            cuotatypeId: this.initialValues.cuotatypeId
                         } : item
                     );
                 }
             }
+        },
+        onFileSelect(event) {
+            const file = event.files[0];
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                this.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
     },
+
     mounted() {
         this.refreshTable();
     }

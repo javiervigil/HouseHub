@@ -11,14 +11,13 @@ const apiClient = axios.create({
 });
 
 export default {
-  login(email, password) {
-
-    const user = {
-      email: email,
-      password: password,
-    };
-    return apiClient.post("/login", user);
+  loginAdmin(data) {
+    return apiClient.post("/loginuser", data);
   },
+  loginUser(data) {
+    return apiClient.post("/logincontact", data);
+  },
+
   //----------- Lotes
   getLotes() {
     return apiClient.get("/lotes");
@@ -27,8 +26,8 @@ export default {
     return apiClient.get("/lotes/" + id);
   },
   createLote(item) {
-    console.log('createLote loteData ' + JSON.stringify(item));
-    return apiClient.post("/lotes", item);
+    console.log('######################################');
+    return apiClient.post("/lotes", item)
   },
   deleteLote(id) {
     return apiClient.delete("/lotes/" + id);
@@ -39,8 +38,6 @@ export default {
   createLote(item) {
     return apiClient.post("/lotes", item);
   },
-
-
 
 
   //----------- Lote Types
@@ -92,20 +89,41 @@ export default {
   getContacto(id) {
     return apiClient.get("/contactos/" + id);
   },
-  createContacto(data) {
-    return apiClient.post("/contactos", data);
+  createContacto(item) {
+    return apiClient.post("/contactos", item);
   },
   deleteContacto(id) {
     return apiClient.delete("/contactos/" + id);
   },
-  updateContacto(data) {
-    return apiClient.put("/contactos", data);
+  updateContacto(item) {
+    return apiClient.put("/contactos", item);
   },
-  createContacto(data) {
-    return apiClient.post("/contactos", data);
+  createContacto(item) {
+    return apiClient.post("/contactos", item);
   },
   getContactosShort() {
     return apiClient.get("/contactosshort");
   },
+
+  //----------- Condominios
+  getCondominios() {
+    return apiClient.get("/condominios");
+  },
+  getCondominio(id) {
+    return apiClient.get("/condominios/" + id);
+  },
+  createCondominio(item) {
+    return apiClient.post("/condominios", item);
+  },
+  deleteCondominio(id) {
+    return apiClient.delete("/condominios/" + id);
+  },
+  updateCondominio(item) {
+    return apiClient.put("/condominios", item);
+  },
+  createCondominio(item) {
+    return apiClient.post("/condominios", item);
+  },
+
 
 };
