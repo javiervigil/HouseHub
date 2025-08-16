@@ -7,11 +7,18 @@
             :rows="10" selectionMode="multiple" :metaKeySelection="metaKey" dataKey="id">
             <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
             <Column field="id" header="Id" hidden></Column>
-            
             <Column field="name" header="Nombre" sortable></Column>
             <Column field="email" header="Correo" sortable></Column>
             <Column field="phone" header="Telefono" sortable></Column>
+            <Column field="adderss" header="Direccion" sortable></Column>
             <Column field="lotesNames" header="Lotes Asociados" sortable></Column>
+            <Column header="Resetear Contrasena">
+                <template #body="">
+                    <Button icon="pi pi-plus" variant="text" v-tooltip.top="'Resetear Contrasena'"
+                        @click="resetPassword">
+                    </Button>
+                </template>
+            </Column>
         </DataTable>
     </div>
 
@@ -107,7 +114,7 @@ export default {
             }
         },
         async createUsuario() {
-            try {               
+            try {
                 return (await apiService.createUsuario(this.initialValues)).data;
             } catch (error) {
                 console.error("Failed to create Usuario:", error);

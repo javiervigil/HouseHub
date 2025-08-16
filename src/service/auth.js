@@ -1,11 +1,17 @@
 import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    user: null, // Objeto con los datos del usuario
-    token: null, // El token de autenticación
-    isAuthenticated: false, // Un booleano que indica el estado
-  }),
+  state: () => {
+    return {
+      userData: {
+        email: '',
+        name: '',
+        rol: null
+      },
+      token: null, // El token de autenticación
+      isAuthenticated: false, // Un booleano que indica el estado
+    }
+  },
 
   getters: {
     isLoggedIn: (state) => state.isAuthenticated,
@@ -13,19 +19,23 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     login(userData, token) {
-      this.user = userData;
+      this.userData = userData;
       this.token = token;
       this.isAuthenticated = true;
 
       // Opcional: guardar el token en el almacenamiento local para persistencia
-      localStorage.setItem('authToken', token);
+      localStorage.setItem('authToken', this.token);
+      localStorage.setItem('user', this.userData);
     },
 
     logout() {
-      this.user = null;
+      this.email = null;
+      this.name = null;
+      this.rol = 0;
       this.token = null;
       this.isAuthenticated = false;
       localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
     },
 
     // Acción para cargar el estado desde el almacenamiento local al iniciar la app

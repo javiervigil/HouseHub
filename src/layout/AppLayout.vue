@@ -3,8 +3,14 @@
         <SideBar />
         <main class="content-container">
             <header class="main-header">
-                <img src="../assets/logoRP.jpg" alt="Home Hub" width="70px">
-                <h1>Home Hub</h1>
+                <div class="main ">
+                    <img src="../assets/logoRP.jpg" alt="Home Hub" width="70px" height="70px">
+                    <h1>Home Hub</h1>
+                </div>
+                <div class="main" style="padding-right: 50px;">
+                    <h3>Bienvenido: {{ userData.name }}<br />
+                        Perfil: {{ obtieneTexto }}</h3>
+                </div>
             </header>
             <div class="main-content">
                 <router-view />
@@ -12,11 +18,43 @@
             <Footer />
         </main>
     </div>
-    <Toast />
 </template>
 
-<script setup>
+<script>
 import SideBar from '@/components/SideBar.vue';
+import { useAuthStore } from '@/service/auth';
+
+export default {
+
+    components: {
+        SideBar
+    },
+    data() {
+        return {
+            authStore: useAuthStore(),
+            userData: {
+                email: '',
+                name: '',
+                rol: null
+            },
+        }
+    },
+    computed: {
+        obtieneTexto() {
+            switch (this.userData.rol) {
+                case 1:
+                    return 'Usuario';
+                case 2:
+                    return 'Administrador';
+                case 3:
+                    return 'Super Administrador';
+            }
+        }
+    },
+    mounted() {
+        this.userData = this.authStore.userData;
+    }
+}
 
 </script>
 
@@ -43,9 +81,14 @@ h3 {
     display: flex;
     flex-direction: column;
     width: 100%;
-     justify-content: space-between;
+    justify-content: space-between;
     padding: 10px;
     min-height: 100vh;
+}
+
+.main {
+    display: flex;
+    padding: 5px;
 }
 
 .main-header {
@@ -55,6 +98,7 @@ h3 {
     display: flex;
     align-items: center;
     padding: 5px;
+    justify-content: space-between;
 }
 
 .main-header h1 {
@@ -66,7 +110,7 @@ h3 {
 
 
 .main-content {
-    
+
     border-radius: 10px;
     background-color: white;
 

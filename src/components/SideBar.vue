@@ -2,50 +2,56 @@
   <aside class="sidebar">
     <nav class="sidebar-nav">
       <!-- Menu Admin -->
-      <ul>
+      <ul v-if="userData.rol === 2">
         <li>
           <router-link :to="{ name: 'homeadmin' }"><Button icon="pi pi-home" v-tooltip="'Home'" /></router-link>
         </li>
         <li>
-          <router-link :to="{ name: 'finanzasa' }"><Button icon="pi pi-money-bill" v-tooltip="'Finanzas'" /></router-link>
+          <router-link :to="{ name: 'finanzasa' }"><Button icon="pi pi-money-bill"
+              v-tooltip="'Finanzas'" /></router-link>
         </li>
         <li>
-          <router-link :to="{ name: 'administracion' }"><Button icon="pi pi-objects-column" v-tooltip="'Administracion'" /></router-link> 
+          <router-link :to="{ name: 'administracion' }"><Button icon="pi pi-objects-column"
+              v-tooltip="'Administracion'" /></router-link>
         </li>
         <li>
-          <router-link :to="{ name: 'configuracion' }"><Button icon="pi pi-cog" v-tooltip="'Configuracion'" /></router-link>
+          <router-link :to="{ name: 'configuracion' }"><Button icon="pi pi-cog"
+              v-tooltip="'Configuracion'" /></router-link>
         </li>
         <li>
-          <router-link :to="{ name: 'about' }"><Button icon="pi pi-question-circle" v-tooltip="'Acerca de'" /></router-link>
+          <router-link :to="{ name: 'about' }"><Button icon="pi pi-question-circle"
+              v-tooltip="'Acerca de'" /></router-link>
         </li>
         <li>
-         <Button icon="pi pi-sign-out" v-tooltip="'Cerrar Sesion'" @click="handleLogout"/>
+          <Button icon="pi pi-sign-out" v-tooltip="'Cerrar Sesion'" @click="handleLogout" />
         </li>
       </ul>
-      <hr/>
+
       <!-- Menu Usuario -->
-       <ul>
+      <ul v-if="userData.rol === 1">
         <li>
           <router-link :to="{ name: 'homeuser' }"><Button icon="pi pi-home" v-tooltip="'Home'" /></router-link>
         </li>
         <li>
-          <router-link :to="{ name: 'finanzasu' }"><Button icon="pi pi-chart-line" v-tooltip="'Finanzas'" /></router-link>
+          <router-link :to="{ name: 'finanzasu' }"><Button icon="pi pi-chart-line"
+              v-tooltip="'Finanzas'" /></router-link>
         </li>
         <li>
-          <router-link :to="{ name: 'about' }"><Button icon="pi pi-question-circle" v-tooltip="'Acerca de'" /></router-link>
+          <router-link :to="{ name: 'about' }"><Button icon="pi pi-question-circle"
+              v-tooltip="'Acerca de'" /></router-link>
         </li>
         <li>
-          <Button icon="pi pi-sign-out" v-tooltip="'Cerrar Sesion'" @click="handleLogout"/>
+          <Button icon="pi pi-sign-out" v-tooltip="'Cerrar Sesion'" @click="handleLogout" />
         </li>
       </ul>
-      <hr/>
+
       <!-- Menu Super Usuario -->
-      <ul>
+      <ul v-if="userData.rol === 3">
         <li>
           <router-link :to="{ name: 'homesuperuser' }"><Button icon="pi pi-home" v-tooltip="'Home'" /></router-link>
         </li>
         <li>
-          <Button icon="pi pi-sign-out" v-tooltip="'Cerrar Sesion'" @click="handleLogout"/>
+          <Button icon="pi pi-sign-out" v-tooltip="'Cerrar Sesion'" @click="handleLogout" />
         </li>
       </ul>
     </nav>
@@ -54,10 +60,9 @@
 
 <script>
 import { Button } from 'primevue';
-import 'primeicons/primeicons.css';
-
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/service/auth';
+import 'primeicons/primeicons.css';
 
 export default {
 
@@ -67,7 +72,13 @@ export default {
   data() {
     return {
       router: useRouter(),
-      authStore: useAuthStore()
+      authStore: useAuthStore(),
+      userData: {
+        email: '',
+        name: '',
+        rol: null
+      },
+
     }
   },
   methods: {
@@ -75,6 +86,9 @@ export default {
       this.authStore.logout(),
         this.$router.push({ name: 'login' })
     }
+  },
+  mounted() {
+    this.userData = this.authStore.userData;
   }
 }
 </script>

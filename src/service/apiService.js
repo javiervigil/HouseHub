@@ -11,11 +11,8 @@ const apiClient = axios.create({
 });
 
 export default {
-  loginAdmin(data) {
-    return apiClient.post("/loginuser", data);
-  },
-  loginUser(data) {
-    return apiClient.post("/logincontact", data);
+  login(data) {
+    return apiClient.post("/login", data);
   },
 
   //----------- Lotes

@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import { definePreset } from '@primeuix/themes';
 import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
 import Tooltip from 'primevue/tooltip';
@@ -17,7 +18,7 @@ const MyPreset = definePreset(Aura, {
             200: '{sky.200}',
             300: '{sky.300}',
             400: '{sky.400}',
-            500: '{sky.800}', 
+            500: '{sky.800}',
             600: '{sky.700}',
             700: '{sky.700}',
             800: '{sky.800}',
@@ -28,14 +29,16 @@ const MyPreset = definePreset(Aura, {
 });
 
 const app = createApp(App);
+
 app.directive('tooltip', Tooltip);
 app.use(PrimeVue, {
     theme: {
-        preset:  MyPreset
+        preset: MyPreset
     },
- });
- app.use(createPinia());
- app.use(ToastService);
- app.use(ConfirmationService);
- app.use(router).mount('#app');
- 
+});
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
+app.use(pinia);
+app.use(ToastService);
+app.use(ConfirmationService);
+app.use(router).mount('#app');

@@ -10,6 +10,7 @@ const routes = [
   {
     path: '/',
     component: AppLayout,
+    meta: { requiresAuth: true },
     children: [
       {
         path: '/',
@@ -54,13 +55,14 @@ const routes = [
     ]
   },
   {
-    path: '/auth/login',
+    path: '/login',
     name: 'login',
     component: () => import('@/views/login/Login.vue')
   },
   {//catch 404
     path: '/:catchAll(.*)',
     name: 'notFound',
+    meta: { requiresAuth: true },
     component: NotFound
   }
   //Route Guards
@@ -71,15 +73,14 @@ const router = createRouter({
   routes
 })
 
-// router.beforeEach((to, from, next) => {
-//   const authStore = useAuthStore();
-
-//   if (authStore.isLoggedIn) {
-//     next('/login');
-//   } else {
-//     next();
-//   }
-
-// });
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore();
+  const requiresAuth = to.meta.requiresAuth;
+  if (requiresAuth && !authStore.isLoggedIn) {
+    next({ name: 'login' });
+  } else {
+    next();
+  }
+});
 
 export default router

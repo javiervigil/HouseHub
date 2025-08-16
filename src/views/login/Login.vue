@@ -1,6 +1,6 @@
 <template>
+  <Toast />
   <div class="main-content-login">
-    <Toast />
     <div class="login-container">
       <div class="login-image">
         <img src="@/assets/img8.jpg" alt="Residential Pro">
@@ -12,9 +12,9 @@
           :validateOnValueUpdate="false" :validateOnBlur="false" @submit="onFormSubmit"
           class="flex flex-col gap-4 w-full sm:w-56">
 
-          <div class="flex flex-col gap-1">
-            <Select v-model="selectedType" :options="userTypes" optionLabel="name"  fluid />
-          </div>
+          <!-- <div class="flex flex-col gap-1">
+            <Select v-model="selectedType" :options="userTypes" optionLabel="name" fluid />
+          </div> -->
 
           <div class="flex flex-col gap-1">
             <InputText name="email" type="email" placeholder="email" fluid />
@@ -29,9 +29,10 @@
 
           <Message v-if="loginErr" severity="error" size="small" variant="simple">{{
             loginErr }}</Message>
+
           <Button type="submit" severity="secondary" label="Submit" style="margin-top: 20px;" />
+
         </Form>
-        {{ selectedType }}
       </div>
     </div>
   </div>
@@ -46,21 +47,27 @@ import { useRouter } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
 import apiService from '@/service/apiService';
 
+
 export default {
   components: {
-    Button, Form, InputText, Message, Toast, Select
+    Button, Form, InputText, Message, Select, Toast
   },
   data() {
     return {
-      toast: useToast(),
       authStore: useAuthStore(),
       router: useRouter(),
+      toast: useToast(),
       token: ref(''),
       loginErr: ref(''),
       initialValues: ref({
         email: 'jj@jj.com',
-        password: 'jj'
+        password: 'pass'
       }),
+      userData: {
+        email: '',
+        name: '',
+        rol: null
+      },
       selectedType: { name: 'Usuario', id: '1' },
       userTypes: [
         { name: 'Usuario', id: '1' },
@@ -70,31 +77,8 @@ export default {
   },
   methods: {
     async handleLogin() {
-      try {
-        let response = null;
-        console.log("Selected type:", this.selectedType.id);
-        if(this.selectedType.id === 1){//admin login     
-          console.log("Admin login");     
-          response = await apiService.loginAdmin(this.initialValues);
-        }else{//normal login
-          console.log("User login");
-          response = await apiService.loginUser(this.initialValues);
-        }
-        console.log("Login response:", response);
-        this.userData = response.data;
-        if (this.userData) {
-          this.toast.add({ severity: 'info', summary: 'Dato login.' + this.userData.id, life: 3000 });
-
-          this.userData = { email: 'Usuario', passwrd: 'user@example.com' };
-          this.token = 'ejemplo-de-token-jwt';
-          this.authStore.login(this.userData, this.token);
-          return true;
-        } else {
-          return false;
-        }
-      } catch (error) {
-        console.error("Failed to login:", error);
-      }
+      this.userData = (await apiService.login(this.initialValues)).data;
+      console.log('justo despues de login await ' + JSON.stringify(this.userData));
     },
 
     resolver({ values }) {
@@ -111,16 +95,28 @@ export default {
         errors
       };
     },
-    onFormSubmit({ valid }) {
+    async onFormSubmit({ valid }) {
       if (valid) {
-        this.handleLogin();
-        this.toast.add({ severity: 'info', summary: 'this.authStore.isLoggedIn.' + this.authStore.isLoggedIn, life: 3000 });
-        if (this.authStore.isLoggedIn) {
-          this.toast.add({ severity: 'success', summary: 'Login successfully.', life: 3000 });
-          //this.$router.push({ name: 'home' });
+        await this.handleLogin();
+
+
+        console.log('this.userData.rol ' + this.userData.rol);
+
+        if (this.userData.rol) {          //user ok       
+          //this.token = 'ejemplo-de-token-jwt';        
+          this.authStore.login(this.userData, this.token);
+          
+          console.log('this.authStore.userData ' + this.authStore.userData);
+          if (this.userData.rol === 1) {
+            this.$router.push({ name: 'homeuser' });
+          } else if (this.userData.rol === 2) {
+            this.$router.push({ name: 'homeadmin' });
+          } else {
+            this.$router.push({ name: 'homesuperuser' });
+          }
         } else {
-          this.loginErr = 'User / password incorrect.';
           this.toast.add({ severity: 'error', summary: 'User / password incorrect.', life: 3000 });
+          this.loginErr = 'User / password incorrect.';
         }
       }
     }
