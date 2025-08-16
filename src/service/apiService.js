@@ -26,7 +26,6 @@ export default {
     return apiClient.get("/lotes/" + id);
   },
   createLote(item) {
-    console.log('######################################');
     return apiClient.post("/lotes", item)
   },
   deleteLote(id) {
@@ -83,27 +82,28 @@ export default {
 
 
   //----------- Contactos
-  getContactos() {
-    return apiClient.get("/contactos");
+  getUsuarios() {
+    return apiClient.get("/usuarios");
   },
-  getContacto(id) {
-    return apiClient.get("/contactos/" + id);
+  getUsuariosByRole(id) {
+    return apiClient.get("/usuarios/rol/" + id);
   },
-  createContacto(item) {
-    return apiClient.post("/contactos", item);
+  getUsuario(id) {
+    return apiClient.get("/usuarios/" + id);
   },
-  deleteContacto(id) {
-    return apiClient.delete("/contactos/" + id);
+  createUsuario(item) {
+    return apiClient.post("/usuarios", item);
   },
-  updateContacto(item) {
-    return apiClient.put("/contactos", item);
+  deleteUsuario(id) {
+    return apiClient.delete("/usuarios/" + id);
   },
-  createContacto(item) {
-    return apiClient.post("/contactos", item);
+  updateUsuario(item) {
+    return apiClient.put("/usuarios", item);
   },
-  getContactosShort() {
-    return apiClient.get("/contactosshort");
+  createUsuario(item) {
+    return apiClient.post("/usuarios", item);
   },
+
 
   //----------- Condominios
   getCondominios() {

@@ -6,14 +6,14 @@
         <DataTable v-model:selection="selectedItems" :value="items" sortField="id" stripedRows size="small" paginator
             :rows="10" selectionMode="multiple" :metaKeySelection="metaKey" dataKey="id">
             <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
-            <Column field="id" header="Id" hidden></Column>
+            <Column field="id" header="id" hidden></Column>
+            <Column field="lotetypeId" header="lotetypeId" hidden></Column>
+            <Column field="cuotatypeId" header="cuotatypeId" hidden></Column>
             <Column field="name" header="Nombre" sortable></Column>
             <Column field="description" header="Descripcion" sortable></Column>
-            <Column field="lotetypeId.name" header="Tipo de Lote" sortable></Column>
-            <Column field="cuotatypeId" header="Cuota asignada" sortable>
-                <template #body="slotProps">
-                    {{ slotProps.data.cuotatypeId.name }} - $ {{ slotProps.data.cuotatypeId.amount }}
-                </template>
+            <Column field="lotetypeName" header="Tipo de Lote" sortable></Column>
+            <Column field="cuotatypeName" header="Cuota asignada" sortable>
+
             </Column>
         </DataTable>
     </div>
@@ -41,8 +41,8 @@
                 <Message v-if="$form.lotetypeId?.invalid" severity="error" size="small" variant="simple">{{
                     $form.lotetypeId.error.message }}</Message>
 
-                <Select name="cuotatypeId" :options="itemsCuotaTypes" optionLabel="name" placeholder="Cuota asignada" fluid
-                    style=" margin-bottom: 10px;  margin-top: 20px;" v-model="selectedCuotaType">
+                <Select name="cuotatypeId" :options="itemsCuotaTypes" optionLabel="name" placeholder="Cuota asignada"
+                    fluid style=" margin-bottom: 10px;  margin-top: 20px;" v-model="selectedCuotaType">
 
                     <template #value="item">
                         <div class="flex-row gap-3">
@@ -66,7 +66,9 @@
                         style="margin-top: 20px;"></Button>
                     <Button type="submit" label="Guardar" style="margin-left: 20px;"></Button>
                 </div>
+                {{ $form }}
             </Form>
+            
         </div>
     </Dialog>
 
@@ -105,7 +107,8 @@ export default {
                 name: '',
                 description: '',
                 lotetypeId: null,
-                cuotatypeId: null
+                cuotatypeId: null,
+                users: []
             }
         }
     },
@@ -136,8 +139,7 @@ export default {
             }
         },
         async updateLote() {
-            try { 
-                this.initialValues.cuotatypeId = this.selectedCuotaType;
+            try {
                 return (await apiService.updateLote(this.initialValues)).data;
             } catch (error) {
                 console.error("Failed to update Lote:", error);
@@ -145,9 +147,6 @@ export default {
         },
         async createLote() {
             try {
-                
-                console.log('######################################2');
-               
                 return (await apiService.createLote(this.initialValues)).data;
             } catch (error) {
                 console.error("Failed to create Lote:", error);
@@ -171,6 +170,7 @@ export default {
             this.initialValues.description = '';
             this.initialValues.lotetypeId = null
             this.initialValues.cuotatypeId = null;
+            this.initialValues.users = [];
             this.selectedCuotaType = null;
             this.showAdd = true;
             this.newItem = true;
@@ -182,7 +182,11 @@ export default {
                 this.titulo = 'Actualizar lote';
                 this.getTiposLote();
                 this.getTiposCuota();
+
+                console.log("initialValues " + JSON.stringify(this.selectedItems[0]));
                 this.initialValues = this.selectedItems[0];
+                console.log("initialValues " + JSON.stringify(this.initialValues));
+
                 this.showAdd = true;
                 this.newItem = false;
             }
@@ -235,8 +239,8 @@ export default {
             }
             this.initialValues.name = values.name;
             this.initialValues.description = values.description;
-            this.initialValues.lotetypeId = values.lotetypeId;
-            this.initialValues.cuotatypeId = values.cuotatypeId;
+            this.initialValues.lotetypeId = values.lotetypeId.id;
+            this.initialValues.cuotatypeId = values.cuotatypeId.id;
             return {
                 errors
             };
@@ -247,8 +251,6 @@ export default {
                 this.showAdd = false;
                 this.selectedItems = [];
                 if (this.newItem) {
-                    console.log('initialValues ' + JSON.stringify(this.initialValues));
-                    console.log('######################################1');
                     this.initialValues = await this.createLote();
                     this.items = [...this.items, this.initialValues];
                     this.refreshTable();
