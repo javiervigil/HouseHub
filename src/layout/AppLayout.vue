@@ -62,7 +62,6 @@ export default {
 body {
     background: #DDDDDD;
     background: linear-gradient(90deg, rgba(221, 221, 221, 1) 0%, rgba(255, 255, 255, 1) 51%, rgba(221, 221, 221, 1) 100%);
-
 }
 
 h1,
@@ -82,13 +81,13 @@ h3 {
     flex-direction: column;
     width: 100%;
     justify-content: space-between;
-    padding: 10px;
+    padding: 0px;
     min-height: 100vh;
 }
 
 .main {
     display: flex;
-    padding: 5px;
+    
 }
 
 .main-header {
@@ -103,20 +102,17 @@ h3 {
 
 .main-header h1 {
     margin-left: 20px;
-    font-size: 2rem;
+    
 }
 
 
 
-
 .main-content {
-
     border-radius: 10px;
     background-color: white;
-
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding-left: 20px;
     overflow-y: auto;
     justify-content: space-between;
     display: flex;

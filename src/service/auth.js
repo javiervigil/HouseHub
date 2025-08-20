@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', {
+  persist: true,
   state: () => {
     return {
       userData: {
@@ -36,6 +37,7 @@ export const useAuthStore = defineStore('auth', {
       this.isAuthenticated = false;
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
+      this.$reset();
     },
 
     // Acción para cargar el estado desde el almacenamiento local al iniciar la app

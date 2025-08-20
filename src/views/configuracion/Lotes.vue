@@ -1,7 +1,7 @@
 <template>
     <Toast />
     <ConfirmPopup></ConfirmPopup>
-    <div class="leftcontent">
+    <div style="width: 80%;">
         <TableBar @addItem="addItem" @editItem="editItem" @deleteItem="deleteItem" @refreshTable="refreshTable" />
         <DataTable v-model:selection="selectedItems" :value="items" sortField="id" stripedRows size="small" paginator
             :rows="10" selectionMode="multiple" :metaKeySelection="metaKey" dataKey="id">
@@ -278,9 +278,6 @@ export default {
 </script>
 
 <style scope>
-.leftcontent {
-    width: 70%;
-}
 
 input,
 select {

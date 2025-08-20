@@ -30,6 +30,11 @@
                 </TabPanel>
                 <TabPanel value="3">
                     <p class="m-0">
+                        <ConceptosCA />
+                    </p>
+                </TabPanel>
+                <TabPanel value="4">
+                    <p class="m-0">
                         <Users />
                     </p>
                 </TabPanel>
@@ -56,7 +61,8 @@ export default {
                 { id: '0', label: 'Lotes', icon: 'pi pi-home' },
                 { id: '1', label: 'Tipo de Lotes', icon: 'pi pi-tags' },
                 { id: '2', label: 'Cuotas', icon: 'pi pi-dollar' },
-                { id: '3', label: 'Usuarios', icon: 'pi pi-address-book' }
+                { id: '3', label: 'Conceptos C/A', icon: 'pi pi-dollar' },
+                { id: '4', label: 'Usuarios', icon: 'pi pi-address-book' }
             ]
         }
     },
@@ -72,8 +78,9 @@ export default {
 }
 
 .internalHeader {
-
     margin: 0;
     padding: 0;
 }
+
+
 </style>

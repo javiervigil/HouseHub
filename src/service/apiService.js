@@ -123,4 +123,60 @@ export default {
   },
 
 
+  //----------- TransaccionesLote
+  getTransaccionesLote() {
+    return apiClient.get("/transaccioneslote");
+  },
+  getTransaccioneLote(id) {
+    return apiClient.get("/transaccioneslote/" + id);
+  },
+  createTransaccionesLote(item) {
+    return apiClient.post("/transaccioneslote", item);
+  },
+  deleteTransaccionesLote(id) {
+    return apiClient.delete("/transaccioneslote/" + id);
+  },
+  updateTransaccionesLote(item) {
+    return apiClient.put("/transaccioneslote", item);
+  },
+  createTransaccionesLote(item) {
+    return apiClient.post("/transaccioneslote", item);
+  },
+  getTransaccionesByLote(id) {
+    return apiClient.get("/transaccioneslote/bylote/" + id);
+  },
+  getTransaccionesLoteTotales() {
+    return apiClient.get("/transaccioneslote/totales");
+  },
+
+
+
+  //------------------TransaccionesLoteType
+  getTransaccionesLoteTypesByType(id) {
+    console.log('getTransaccionesLoteTypesByType ' + id);
+    return apiClient.get("/transaccioneslotetypes/bytype/" + id);
+  },
+
+
+  //----------------------Bitacora Acceso
+
+  getBitacoraAccesos() {
+    return apiClient.get("/bitacoraacceso");
+  },
+  getBitacoraAcceso(id) {
+    return apiClient.get("/bitacoraacceso/" + id);
+  },
+  createBitacoraAcceso(data) {
+    return apiClient.post("/bitacoraacceso", data);
+  },
+  deleteBitacoraAcceso(id) {
+    return apiClient.delete("/bitacoraacceso/" + id);
+  },
+  updateBitacoraAcceso(data) {
+    return apiClient.put("/bitacoraacceso", data);
+  },
+  createBitacoraAcceso(data) {
+    return apiClient.post("/bitacoraacceso", data);
+  },
+
 };
