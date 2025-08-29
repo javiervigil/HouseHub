@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:remove="all">Email de Bienvenida</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <p>¡Hola <span th:text="${userName}">Usuario</span>!</p>
+
+        <p>Gracias por registrarte en nuestra plataforma. Estamos encantados de tenerte con nosotros.</p>
+
+        <p>Estos son tus datos de acceso:</p>
+        <ul>
+            <li>**Nombre de usuario:** <span th:text="${userName}"></span></li>
+            <li>**Email:** <span th:text="${userEmail}"></span></li>
+        </ul>
+
+        <p>Saludos cordiales,<br>El equipo de la plataforma</p>
+    </body>
+</html>
